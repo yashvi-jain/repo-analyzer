@@ -154,5 +154,23 @@ def analyze_github_repository(github_url: str):
 
         "git_statistics": git_stats,
 
-        "report": report,
+        "overall_grade": report["overall_grade"],
+
+        "code_health": report["code_health"],
+
+        "architecture_score": report["architecture_score"],
+
+        "risk_level": report["risk_level"],
+
+        "top_hotspots": report["top_hotspots"],
+
+        "most_complex_files": report["most_complex_files"],
+
+        "highest_risk_files": report["highest_risk_files"],
+
+        "duplicate_files": report["duplicate_files"],
+
+        "dependency_cycles": report["dependency_cycles"],
+
+        "recommendations": report["recommendations"],
     }

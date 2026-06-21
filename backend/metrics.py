@@ -774,9 +774,7 @@ def repository_summary(metrics):
 
 def analyze_file(file, repo_path, source_files, churn, dependency_graph):
 
-    relative_path = str(
-        Path(file).relative_to(repo_path)
-    )
+    relative_path = file
 
     coupling = coupling_penalty(
         dependency_graph,
@@ -841,23 +839,23 @@ def analyze_repository(repo_path: str, source_files, dependency_graph):
 
     with ThreadPoolExecutor() as executor:
 
-    metrics = list(
+        metrics = list(
 
-        executor.map(
+            executor.map(
 
-            lambda f: analyze_file(
-                f,
-                repo_path,
+                lambda f: analyze_file(
+                    f,
+                    repo_path,
+                    source_files,
+                    churn,
+                    dependency_graph,
+                ),
+
                 source_files,
-                churn,
-                dependency_graph,
-            ),
 
-            source_files,
+            )
 
         )
-
-    )
 
     metrics.sort(
         key=lambda x: x["risk"],

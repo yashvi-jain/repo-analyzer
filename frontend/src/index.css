@@ -1,0 +1,174 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+/* ===========================
+   Theme Variables
+=========================== */
+
+:root {
+  --background: #1a1f1a;
+  --surface: rgba(64, 78, 59, 0.35);
+
+  --primary: #7b9669;
+  --secondary: #6c8480;
+  --accent: #bac8b1;
+
+  --text: #e6e6e6;
+  --border: rgba(186, 200, 177, 0.18);
+
+  --radius: 8px;
+}
+
+/* ===========================
+   Base
+=========================== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+
+  background: var(--background);
+  color: var(--text);
+
+  font-family: "Quicksand", sans-serif;
+
+  overflow-x: hidden;
+
+  position: relative;
+}
+
+/* ===========================
+   Background Gradient
+=========================== */
+
+body::before {
+  content: "";
+
+  position: fixed;
+  inset: 0;
+
+  background:
+    radial-gradient(circle at 15% 15%, rgba(123,150,105,.18), transparent 35%),
+    radial-gradient(circle at 85% 20%, rgba(108,132,128,.16), transparent 35%),
+    radial-gradient(circle at 50% 85%, rgba(186,200,177,.14), transparent 40%);
+
+  filter: blur(80px);
+
+  z-index: -2;
+}
+
+/* ===========================
+   Typography
+=========================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-heading {
+  font-family: "Geist", sans-serif;
+}
+
+p,
+span,
+a,
+button,
+input,
+textarea,
+table,
+.font-body {
+  font-family: "Quicksand", sans-serif;
+}
+
+/* ===========================
+   Selection
+=========================== */
+
+::selection {
+  background: var(--primary);
+  color: white;
+}
+
+/* ===========================
+   Scrollbar
+=========================== */
+
+::-webkit-scrollbar {
+  width: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--secondary);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* ===========================
+   Glass Card
+=========================== */
+
+.glass-card {
+  background: var(--surface);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.22);
+}
+
+/* ===========================
+   Utilities
+=========================== */
+
+.text-primary {
+  color: var(--primary);
+}
+
+.text-secondary {
+  color: var(--secondary);
+}
+
+.text-accent {
+  color: var(--accent);
+}
+
+.bg-primary {
+  background: var(--primary);
+}
+
+.bg-secondary {
+  background: var(--secondary);
+}
+
+.border-theme {
+  border-color: var(--border);
+}
+
+/* ===========================
+   Focus
+=========================== */
+
+input:focus,
+button:focus,
+textarea:focus {
+  outline: none;
+}

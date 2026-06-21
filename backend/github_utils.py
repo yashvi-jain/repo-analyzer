@@ -3,6 +3,7 @@ import shutil
 import ast
 import json
 import re
+import stat
 
 from pathlib import Path
 from urllib.parse import urlparse
@@ -56,8 +57,12 @@ def clone_repository(url: str) -> str:
 
     destination = REPO_STORAGE / repo_name
 
-    if destination.exists():
-        shutil.rmtree(destination)
+    def handle_remove_readonly(func, path, exc):
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
+
+
+    shutil.rmtree(destination, onerror=handle_remove_readonly)
 
     try:
         Repo.clone_from(url, destination)
@@ -105,7 +110,7 @@ def get_all_source_files(repo_path: str):
             path = Path(root) / file
 
             if path.suffix.lower() in extensions:
-                files.append(str(path))
+                files.append(str(path.relative_to(repo_path)))
 
     return files
 

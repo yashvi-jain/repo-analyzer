@@ -109,8 +109,6 @@ def generate_report(summary, files, graph, git_stats):
         "risk_level":
             risk_level(summary["average_risk"]),
 
-        "summary": summary,
-
         "top_hotspots": hotspots,
 
         "most_complex_files": complex_files,
@@ -120,8 +118,6 @@ def generate_report(summary, files, graph, git_stats):
         "duplicate_files": duplicate_files,
 
         "dependency_cycles": dependency_cycles,
-
-        "git_statistics": git_stats,
 
         "recommendations":
             recommendations(
