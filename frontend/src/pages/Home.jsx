@@ -87,7 +87,7 @@ export default function Home() {
         <div className="glass-card mb-8 inline-flex items-center gap-2 px-4 py-2">
           <FaGithub size={18} />
           <span className="text-sm text-neutral-300">
-            AI-Powered Repository Analysis
+            Repository Analysis
           </span>
         </div>
 

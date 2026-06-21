@@ -61,8 +61,8 @@ def clone_repository(url: str) -> str:
         os.chmod(path, stat.S_IWRITE)
         func(path)
 
-
-    shutil.rmtree(destination, onerror=handle_remove_readonly)
+    if destination.exists():
+        shutil.rmtree(destination, onerror=handle_remove_readonly)
 
     try:
         Repo.clone_from(url, destination)
