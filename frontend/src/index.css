@@ -172,3 +172,149 @@ button:focus,
 textarea:focus {
   outline: none;
 }
+
+/* ===========================
+   Dependency Graph
+=========================== */
+
+.dependency-card {
+  overflow: hidden;
+}
+
+.dependency-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.dependency-title {
+  color: var(--text);
+}
+
+.dependency-graph {
+  height: 700px;
+  overflow: hidden;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+/* ===========================
+   React Flow
+=========================== */
+
+.react-flow {
+  background: transparent;
+}
+
+.react-flow__background {
+  opacity: 0.22;
+}
+
+.react-flow__controls {
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  background: var(--surface);
+
+  box-shadow: 0 8px 24px rgba(0,0,0,.22);
+}
+
+.react-flow__controls button {
+  background: transparent;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+
+.react-flow__controls button:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.react-flow__controls button svg {
+  fill: var(--text);
+}
+
+/* ===========================
+   MiniMap
+=========================== */
+
+.react-flow__minimap {
+  border-radius: var(--radius);
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+
+  background: var(--surface);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* ===========================
+   Nodes
+=========================== */
+
+.react-flow__node {
+  background: rgba(64, 78, 59, 0.45);
+
+  color: var(--text);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow: 0 6px 18px rgba(0,0,0,.18);
+
+  font-family: "Geist", sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+
+  transition: all .18s ease;
+}
+
+.react-flow__node:hover {
+  transform: translateY(-2px);
+
+  border-color: var(--primary);
+
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.28);
+}
+
+.react-flow__node.selected {
+  border-color: var(--primary);
+}
+
+/* ===========================
+   Handles
+=========================== */
+
+.react-flow__handle {
+  width: 8px;
+  height: 8px;
+
+  background: var(--primary);
+
+  border: 2px solid var(--surface);
+}
+
+/* ===========================
+   Edges
+=========================== */
+
+.react-flow__edge-path {
+  stroke: var(--secondary);
+  stroke-width: 2;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--primary);
+}
+
+.react-flow__arrowhead {
+  fill: var(--secondary);
+}

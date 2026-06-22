@@ -115,7 +115,7 @@ def analyze_github_repository(github_url: str):
     source_files = get_all_source_files(repo_path)
 
     # Build dependency graph
-    graph = build_dependency_graph(source_files)
+    graph = build_dependency_graph(repo_path, source_files)
 
     # Static analysis
     analysis = analyze_repository(

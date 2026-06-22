@@ -149,7 +149,7 @@ export default function Home() {
           </button>
 
           <p className="mt-5 text-sm text-neutral-400">
-            Supports Python, C and C++ repositories
+            Supports Python, C, C++, JavaScript and TypeScript repositories
           </p>
         </div>
       </section>

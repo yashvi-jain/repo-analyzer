@@ -1,5 +1,6 @@
 import hashlib
 from pathlib import Path
+import os
 
 import lizard
 from radon.complexity import cc_visit
@@ -18,7 +19,9 @@ LIZARD_EXTENSIONS = {
     ".h",
     ".java",
     ".js",
+    ".jsx",
     ".ts",
+    ".tsx",
 }
 
 # -------------------------------------------------------
@@ -45,6 +48,7 @@ def read_file(file_path: str) -> str:
             "r",
             encoding="utf-8",
             errors="ignore",
+            newline=None,
         ) as f:
 
             content = f.read()
@@ -71,20 +75,6 @@ def count_lines(file_path: str):
         return 0
 
     return source.count("\n") + 1
-
-# -------------------------------------------------------
-# Normalization
-# -------------------------------------------------------
-
-def normalize(value, maximum):
-    """
-    Normalize a value to 0-100.
-    """
-
-    if maximum <= 0:
-        return 0.0
-
-    return round((value / maximum) * 100, 2)
 
 # -------------------------------------------------------
 # Cyclomatic Complexity
@@ -183,25 +173,8 @@ def calculate_maintainability(file_path: str):
 
         return None
 
-
-# -------------------------------------------------------
-# Utility
-# -------------------------------------------------------
-
-def file_hash(file_path: str):
-    """
-    SHA256 hash used later for duplicate detection.
-    """
-
-    source = read_file(file_path)
-
-    return hashlib.sha256(
-        source.encode("utf-8")
-    ).hexdigest()
-
 import re
 from collections import defaultdict
-
 
 # -------------------------------------------------------
 # Language Detection
@@ -216,7 +189,9 @@ LANGUAGE_MAP = {
     ".h": "C/C++ Header",
     ".java": "Java",
     ".js": "JavaScript",
+    ".jsx": "React (JS)",
     ".ts": "TypeScript",
+    ".tsx": "React (TS)",
 }
 
 
@@ -538,6 +513,7 @@ def calculate_risk_score(
     churn,
     coupling,
     lines,
+    dead_code_count,
 ):
     """
     Production-style engineering risk score.
@@ -546,7 +522,7 @@ def calculate_risk_score(
     complexity_score = min(complexity * 8, 100)
 
     maintainability_penalty = (
-        50
+        0
         if maintainability is None
         else 100 - maintainability
     )
@@ -555,11 +531,13 @@ def calculate_risk_score(
 
     size_score = size_penalty(lines)
 
+    dead_code_score = min(dead_code_count * 10, 100)
+
     score = (
 
         0.25 * complexity_score
 
-        + 0.20 * churn_score
+        + 0.15 * churn_score
 
         + 0.20 * maintainability_penalty
 
@@ -568,6 +546,8 @@ def calculate_risk_score(
         + 0.10 * coupling
 
         + 0.10 * size_score
+
+        + 0.10 * dead_code_score
 
     )
 
@@ -598,13 +578,16 @@ def size_penalty(lines):
     """
 
     if lines < 300:
-        return 0
+        return 10
 
     if lines < 500:
         return 20
 
     if lines < 800:
-        return 50
+        return 40
+    
+    if lines < 1000:
+        return 60
 
     return 100
 
@@ -678,10 +661,10 @@ def code_health(metrics):
 
     health = (
         100
-        - avg_complexity * 2
-        + avg_mi * 0.45
+        - avg_complexity * 1.5
+        - (100 - avg_mi) * 0.45
         - avg_duplicate * 0.20
-        - avg_risk * 0.30
+        - avg_risk 
     )
 
     return round(
@@ -696,16 +679,16 @@ def code_health(metrics):
 
 def health_grade(score):
 
-    if score >= 90:
+    if score >= 85:
         return "A"
 
-    if score >= 80:
+    if score >= 70:
         return "B"
 
-    if score >= 70:
+    if score >= 60:
         return "C"
 
-    if score >= 60:
+    if score >= 40:
         return "D"
 
     return "F"
@@ -775,17 +758,19 @@ def repository_summary(metrics):
 def analyze_file(file, repo_path, source_files, churn, dependency_graph):
 
     relative_path = file
+    full_path = os.path.join(repo_path, file)
+    full_source_files = [os.path.join(repo_path, f) for f in source_files]
 
     coupling = coupling_penalty(
         dependency_graph,
-        file,
+        relative_path,
     )
 
-    complexity = calculate_complexity(file)
-    maintainability = calculate_maintainability(file)
-    duplicate = duplicate_percentage(file, source_files)
+    complexity = calculate_complexity(full_path)
+    maintainability = calculate_maintainability(full_path)
+    duplicate = duplicate_percentage(full_path, full_source_files)
 
-    lines = count_lines(file)
+    lines = count_lines(full_path)
 
     commits = churn.get(
         relative_path.replace("\\", "/"),
@@ -797,13 +782,17 @@ def analyze_file(file, repo_path, source_files, churn, dependency_graph):
         commits,
     )
 
+    dead_code = dead_code_report(full_path)
+    dead_item_count = sum(len(items) for items in dead_code.values())
+
     risk = calculate_risk_score(
         complexity,
         maintainability,
         duplicate,
         commits,
         coupling=coupling,
-        lines=lines
+        lines=lines,
+        dead_code_count=dead_item_count
     )
 
     return {
@@ -817,7 +806,7 @@ def analyze_file(file, repo_path, source_files, churn, dependency_graph):
         "risk": risk,
         "hotspot": hotspot,
         "git_churn": commits,
-        "dead_code": dead_code_report(file),
+        "dead_code": dead_code,
     }
 
 def analyze_repository(repo_path: str, source_files, dependency_graph):

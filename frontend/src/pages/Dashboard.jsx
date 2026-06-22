@@ -169,7 +169,7 @@ export default function Dashboard() {
         </h2>
 
         <div className="space-y-3">
-          {top_hotspots.slice(0, 10).map((file) => (
+          {top_hotspots.slice(0, 5).map((file) => (
             <div
               key={file.file}
               className="flex items-center justify-between border-b border-[var(--border)] pb-2"
@@ -190,7 +190,7 @@ export default function Dashboard() {
         </h2>
 
         <div className="space-y-3">
-          {highest_risk_files.slice(0, 10).map((file) => (
+          {highest_risk_files.slice(0, 5).map((file) => (
             <div
               key={file.file}
               className="flex items-center justify-between border-b border-[var(--border)] pb-2"

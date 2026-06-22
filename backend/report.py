@@ -15,22 +15,48 @@ def risk_level(avg_risk):
     return "Critical"
 
 
+import networkx as nx
+
 def architecture_score(summary, graph):
+    if graph is None or len(graph.nodes) == 0:
+        return summary["code_health"]
 
-    score = summary["code_health"]
+    base_score = summary["code_health"]
+    
+    try:
+        cycles = len(list(nx.simple_cycles(graph)))
+        cycle_penalty = min(cycles * 3, 20)
+    except Exception:
+        cycle_penalty = 0
 
-    cycles = len(list(nx.simple_cycles(graph)))
+    coupling_penalty = 0
+    total_nodes = len(graph.nodes)
+    
+    for node in graph.nodes:
+        fan_in = graph.in_degree(node)
+        fan_out = graph.out_degree(node)
+        
+        if total_nodes > 3 and fan_out > (total_nodes * 0.30):
+            coupling_penalty += 2
+            
+        if total_nodes > 3 and fan_in > (total_nodes * 0.50):
+            coupling_penalty += 1
 
-    score -= min(cycles * 3, 20)
+    coupling_penalty = min(coupling_penalty, 15)
 
-    return round(max(score, 0), 2)
+    density = nx.density(graph)
+    density_penalty = min(density * 40, 15)  # Max 15 point penalty for pure spaghetti
+
+    final_score = base_score - (cycle_penalty + coupling_penalty + density_penalty)
+
+    return round(max(0, min(100, final_score)), 2)
 
 
 def recommendations(summary, files, graph):
 
     recommendations = []
 
-    if summary["average_complexity"] > 10:
+    if summary["average_complexity"] > 5:
         recommendations.append(
             "Reduce cyclomatic complexity by refactoring large functions."
         )
@@ -40,9 +66,14 @@ def recommendations(summary, files, graph):
             "Improve maintainability by reducing function size and duplication."
         )
 
-    if summary["average_risk"] > 60:
+    if summary["average_risk"] > 40:
         recommendations.append(
             "Prioritize high-risk files for refactoring."
+        )
+    
+    if summary["code_health"] < 70:
+        recommendations.append(
+            "Improve code complexity and optimize high-risk files."
         )
 
     cycles = list(nx.simple_cycles(graph))
@@ -54,7 +85,7 @@ def recommendations(summary, files, graph):
 
     if not recommendations:
         recommendations.append(
-            "Repository follows good engineering practices."
+            "Repository follows good engineering practices. Look at the file metrics to optimize further."
         )
 
     return recommendations

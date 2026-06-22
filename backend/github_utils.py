@@ -86,7 +86,9 @@ def get_all_source_files(repo_path: str):
         ".h",
         ".java",
         ".js",
+        ".jsx",
         ".ts",
+        ".tsx",
     }
 
     files = []
@@ -146,8 +148,8 @@ def python_imports(file_path: str):
                 if node.module:
                     imports.append(node.module)
 
-    except Exception:
-        pass
+    except Exception as e:
+        print(file_path, e)
 
     return imports
 
@@ -170,46 +172,78 @@ def cpp_includes(file_path: str):
             source,
         )
 
-    except Exception:
-        pass
+    except Exception as e:
+        print(file_path, e)
 
     return includes
 
-def build_dependency_graph(files):
+def js_imports(file_path: str):
     """
-    Builds an actual dependency graph.
+    Extracts JavaScript/JSX/TypeScript imports by matching paths inside quotes.
     """
+    imports = []
+    try:
+        source = Path(file_path).read_text(encoding="utf-8", errors="ignore")
+        
+        source = source.replace("\xa0", " ")
+        
+        matches = re.findall(r'(?:from|require)\s*\(?\s*[\'"](.+?)[\'"]', source)
+        
+        for path in matches:
+            clean_path = path.replace("\\", "/")
+            pure_name = clean_path.split("/")[-1].split(".")[0]
+            
+            imports.append(pure_name.strip().lower())
+    except Exception as e:
+        print(file_path, e)
+    return imports
 
+def build_dependency_graph(repo_path, files):
+    """
+    Builds an actual dependency graph by cross-referencing file stems.
+    """
     graph = nx.DiGraph()
 
+    file_lookup = {}
     for file in files:
-
         graph.add_node(file)
+        normalized_path = file.replace("\\", "/")
+        pure_name = normalized_path.split("/")[-1].split(".")[0].strip().lower()
+        file_lookup[pure_name] = file
 
+    for file in files:
         extension = Path(file).suffix.lower()
-
         dependencies = []
 
         if extension == ".py":
-
-            dependencies = python_imports(file)
+  
+            raw_py = python_imports(os.path.join(repo_path, file))
+            dependencies = [d.split(".")[-1].strip().lower() for d in raw_py]
 
         elif extension in {
-            ".cpp",
-            ".cc",
-            ".c",
-            ".hpp",
-            ".h",
+            ".js",
+            ".jsx", 
+            ".ts", 
+            ".tsx"
         }:
+            raw_js = js_imports(os.path.join(repo_path, file))
+            dependencies = [d.lower() for d in raw_js]
 
-            dependencies = cpp_includes(file)
+        elif extension in {
+            ".cpp", 
+            ".cc", 
+            ".c", 
+            ".hpp", 
+            ".h"
+        }:
+            raw_cpp = cpp_imports(os.path.join(repo_path, file))
+            dependencies = [d.split(".")[0].strip().lower() for d in raw_cpp]
 
-        for dependency in dependencies:
-
-            graph.add_edge(
-                file,
-                dependency,
-            )
+        for dep in dependencies:
+            if dep in file_lookup:
+                target_file = file_lookup[dep]
+                if file != target_file:
+                    graph.add_edge(file, target_file)
 
     return graph
 
