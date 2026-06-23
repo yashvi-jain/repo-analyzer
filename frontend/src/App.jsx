@@ -34,10 +34,10 @@ export default function App() {
               Dashboard
             </NavLink>
 
-            <NavLink to="/history" className={navLinkClass}>
+            {/* <NavLink to="/history" className={navLinkClass}>
               <History size={18} />
               History
-            </NavLink>
+            </NavLink> */}
           </nav>
         </div>
       </header>

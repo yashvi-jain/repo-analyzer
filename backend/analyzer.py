@@ -4,6 +4,7 @@ from github_utils import (
     build_dependency_graph,
     dependency_graph_json,
     get_git_statistics,
+    analyze_readme,
 )
 
 from metrics import analyze_repository
@@ -127,12 +128,16 @@ def analyze_github_repository(github_url: str):
     # Git analytics
     git_stats = get_git_statistics(repo_path)
 
+    # README analysis
+    readme = analyze_readme(repo_path)
+
     # Final report
     report = generate_report(
         analysis["summary"],
         analysis["files"],
         graph,
         git_stats,
+        readme,
     )
 
     save_analysis(
@@ -161,6 +166,8 @@ def analyze_github_repository(github_url: str):
         "architecture_score": report["architecture_score"],
 
         "risk_level": report["risk_level"],
+
+        "readme": report["readme"],
 
         "top_hotspots": report["top_hotspots"],
 

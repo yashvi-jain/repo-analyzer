@@ -69,6 +69,7 @@ export default function Dashboard() {
   files,
   dependency_graph,
   git_statistics,
+  readme,
 
   overall_grade,
   code_health,
@@ -154,13 +155,57 @@ export default function Dashboard() {
       </section>
 
       <section className="mt-10">
-        <DependencyGraph
-          graph={JSON.parse(dependency_graph)}
-        />
+        <DataTable files={files} />
+      </section>
+
+      <section className="glass-card mt-10 p-8">
+        <h2 className="font-heading mb-6 text-2xl font-semibold">
+          README Documentation
+        </h2>
+
+        {!readme.exists ? (
+          <p className="text-red-400">
+            No README.md file found.
+          </p>
+        ) : (
+          <>
+            <div className="mb-6">
+              <p className="text-sm text-neutral-400">
+                Documentation Score
+              </p>
+
+              <p className="mt-2 text-3xl font-bold text-primary">
+                {readme.score}%
+              </p>
+            </div>
+
+            {readme.missing_sections.length === 0 ? (
+              <p className="text-green-400">
+                ✓ All recommended documentation sections are present.
+              </p>
+            ) : (
+              <>
+                <p className="mb-3 font-medium">
+                  Missing Sections
+                </p>
+
+                <ul className="space-y-2">
+                  {readme.missing_sections.map((section) => (
+                    <li key={section}>
+                      • {section}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </>
+        )}
       </section>
 
       <section className="mt-10">
-        <DataTable files={files} />
+        <DependencyGraph
+          graph={JSON.parse(dependency_graph)}
+        />
       </section>
 
       <section className="glass-card mt-10 p-8">
@@ -211,7 +256,7 @@ export default function Dashboard() {
         </h2>
 
         <div className="space-y-3">
-          {most_complex_files.slice(0, 10).map((file) => (
+          {most_complex_files.slice(0, 5).map((file) => (
             <div
               key={file.file}
               className="flex items-center justify-between border-b border-[var(--border)] pb-2"

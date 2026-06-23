@@ -14,9 +14,6 @@ def risk_level(avg_risk):
 
     return "Critical"
 
-
-import networkx as nx
-
 def architecture_score(summary, graph):
     if graph is None or len(graph.nodes) == 0:
         return summary["code_health"]
@@ -91,25 +88,25 @@ def recommendations(summary, files, graph):
     return recommendations
 
 
-def generate_report(summary, files, graph, git_stats):
+def generate_report(summary, files, graph, git_stats, readme):
 
     hotspots = sorted(
         files,
         key=lambda x: x["hotspot"],
         reverse=True,
-    )[:10]
+    )[:5]
 
     complex_files = sorted(
         files,
         key=lambda x: x["complexity"],
         reverse=True,
-    )[:10]
+    )[:5]
 
     risky_files = sorted(
         files,
         key=lambda x: x["risk"],
         reverse=True,
-    )[:10]
+    )[:5]
 
     duplicate_files = sorted(
         files,
@@ -139,6 +136,8 @@ def generate_report(summary, files, graph, git_stats):
 
         "risk_level":
             risk_level(summary["average_risk"]),
+
+        "readme": readme,
 
         "top_hotspots": hotspots,
 

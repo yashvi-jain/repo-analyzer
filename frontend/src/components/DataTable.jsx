@@ -45,7 +45,7 @@ export default function DataTable({ files }) {
                 </td>
 
                 <td className="px-6 py-4">
-                  {file.maintainability}
+                  {file.maintainability ? file.maintainability : "N/A"}
                 </td>
 
                 <td className="px-6 py-4">

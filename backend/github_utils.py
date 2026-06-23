@@ -305,3 +305,98 @@ def get_git_statistics(repo_path: str):
         "contributors": contributors,
         "default_branch": repo.active_branch.name,
     }
+
+def analyze_readme(repo_path: str):
+    """
+    Analyze README completeness based on common documentation headings.
+    """
+
+    readme_path = None
+
+    for root, _, files in os.walk(repo_path):
+        for file in files:
+            if file.lower() == "readme.md":
+                readme_path = os.path.join(root, file)
+                break
+        if readme_path:
+            break
+
+    section_keywords = {
+        "Installation": [
+            "installation",
+            "install",
+            "setup",
+            "getting started",
+            "quick start",
+        ],
+        "Usage": [
+            "usage",
+            "how to use",
+            "example",
+            "examples",
+        ],
+        "Features": [
+            "features",
+            "capabilities",
+            "highlights",
+        ],
+        "License": [
+            "license",
+            "licence",
+        ],
+        "Contributing": [
+            "contributing",
+            "contribution",
+            "development",
+        ],
+    }
+
+    if readme_path is None:
+        return {
+            "exists": False,
+            "score": 0,
+            "missing_sections": list(section_keywords.keys()),
+        }
+
+    try:
+        content = Path(readme_path).read_text(
+            encoding="utf-8",
+            errors="ignore",
+        ).lower()
+    except Exception:
+        return {
+            "exists": False,
+            "score": 0,
+            "missing_sections": list(section_keywords.keys()),
+        }
+
+    headings = re.findall(
+        r"^\s*#{1,6}\s+(.*)$",
+        content,
+        flags=re.MULTILINE,
+    )
+
+    headings = [heading.strip() for heading in headings]
+
+    found = []
+
+    for section, keywords in section_keywords.items():
+        if any(
+            any(keyword in heading for keyword in keywords)
+            for heading in headings
+        ):
+            found.append(section)
+
+    missing = [
+        section
+        for section in section_keywords
+        if section not in found
+    ]
+
+    score = round((len(found) / len(section_keywords)) * 100)
+
+    return {
+        "exists": True,
+        "score": score,
+        "missing_sections": missing,
+    }
