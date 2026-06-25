@@ -55,7 +55,8 @@ For each file:
 2. Relate those issues to the provided metrics (complexity, maintainability, risk, duplication, hotspot, dead code).
 3. Mention the likely root causes behind the high scores.
 4. Incase of duplicate %, also show what the possible duplicates are.
-5. Give exactly 3 actionable refactoring suggestions, with reference to the source code.
+5. Note that potentially unused functions are simply those that have not been called in the same file- they may not be dead code hence dont rely on that.
+6. Give exactly 3 actionable refactoring suggestions, with reference to the source code.
 
 Rules:
 - Keep the explanation under 100 words.
@@ -123,7 +124,7 @@ Duplicate:
 Hotspot:
 {file["hotspot"]}
 
-Dead Code:
+Potentially Unused Functions:
 {file["dead_code"]}
 
 Source Code:
