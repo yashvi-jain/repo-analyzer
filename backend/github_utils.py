@@ -8,9 +8,10 @@ from pathlib import Path
 from urllib.parse import urlparse
 from git import Repo, GitCommandError
 import networkx as nx
+from dotenv import load_dotenv
 
-REPO_STORAGE = Path("repos")
-REPO_STORAGE.mkdir(exist_ok=True)
+REPO_STORAGE = Path(os.getenv("REPO_STORAGE", "repos"))
+REPO_STORAGE.mkdir(parents=True, exist_ok=True)
 
 def validate_github_url(url: str) -> bool:
     """

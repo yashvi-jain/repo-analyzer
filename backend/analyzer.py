@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 from database import SessionLocal
 from models import Repository, Analysis, FileMetric
 import traceback
+import shutil
 
 def save_analysis(
     github_url: str,
@@ -151,7 +152,7 @@ def analyze_github_repository(github_url: str):
         report,
     )
 
-    return {
+    response = {
         "repository": github_url,
         "summary": analysis["summary"],
         "files": analysis["files"],
@@ -169,3 +170,7 @@ def analyze_github_repository(github_url: str):
         "dependency_cycles": report["dependency_cycles"],
         "ai_insights": ai_insights,
     }
+
+    shutil.rmtree(repo_path, ignore_errors=True)
+
+    return response

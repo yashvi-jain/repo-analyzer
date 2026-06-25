@@ -3,14 +3,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 import os
 
-# Load environment variables
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL not found in .env")
-
 
 # SQLAlchemy engine
 engine = create_engine(
@@ -19,7 +17,6 @@ engine = create_engine(
     future=True,
 )
 
-
 # Session factory
 SessionLocal = sessionmaker(
     bind=engine,
@@ -27,11 +24,9 @@ SessionLocal = sessionmaker(
     autocommit=False,
 )
 
-
 # Base class for all ORM models
 class Base(DeclarativeBase):
     pass
-
 
 # Dependency for FastAPI
 def get_db():
@@ -40,7 +35,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
 
 # Create all tables
 def init_db():
