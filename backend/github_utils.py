@@ -4,17 +4,13 @@ import ast
 import json
 import re
 import stat
-
 from pathlib import Path
 from urllib.parse import urlparse
-
 from git import Repo, GitCommandError
 import networkx as nx
 
-
 REPO_STORAGE = Path("repos")
 REPO_STORAGE.mkdir(exist_ok=True)
-
 
 def validate_github_url(url: str) -> bool:
     """
@@ -104,6 +100,7 @@ def get_all_source_files(repo_path: str):
                 "node_modules",
                 "venv",
                 ".venv",
+                ".env",
             }
         ]
 
@@ -128,11 +125,7 @@ def python_imports(file_path: str):
     imports = []
 
     try:
-
-        source = Path(file_path).read_text(
-            encoding="utf-8",
-            errors="ignore"
-        )
+        source = Path(file_path).read_text(encoding="utf-8", errors="ignore")
 
         tree = ast.parse(source)
 
@@ -161,16 +154,9 @@ def cpp_includes(file_path: str):
     includes = []
 
     try:
+        source = Path(file_path).read_text(encoding="utf-8", errors="ignore")
 
-        source = Path(file_path).read_text(
-            encoding="utf-8",
-            errors="ignore"
-        )
-
-        includes = re.findall(
-            r'#include\s+[<"](.+?)[>"]',
-            source,
-        )
+        includes = re.findall(r'#include\s+[<"](.+?)[>"]', source)
 
     except Exception as e:
         print(file_path, e)
@@ -192,8 +178,8 @@ def js_imports(file_path: str):
         for path in matches:
             clean_path = path.replace("\\", "/")
             pure_name = clean_path.split("/")[-1].split(".")[0]
-            
             imports.append(pure_name.strip().lower())
+
     except Exception as e:
         print(file_path, e)
     return imports
@@ -322,29 +308,35 @@ def analyze_readme(repo_path: str):
             break
 
     section_keywords = {
-        "Installation": [
+        "Installation/Requirements": [
             "installation",
             "install",
             "setup",
-            "getting started",
-            "quick start",
+            "requirements",
+            "prerequisites",
+            "supporting",
         ],
         "Usage": [
+            "getting started",
+            "quick start",
             "usage",
+            "how to",
             "how to use",
             "example",
             "examples",
+            "run",
         ],
-        "Features": [
+        "Features/Description": [
             "features",
             "capabilities",
             "highlights",
+            "summary",
+            "functionality",
+            "description",
         ],
-        "License": [
+        "License/Contribution": [
             "license",
             "licence",
-        ],
-        "Contributing": [
             "contributing",
             "contribution",
             "development",
@@ -367,7 +359,7 @@ def analyze_readme(repo_path: str):
         return {
             "exists": False,
             "score": 0,
-            "missing_sections": list(section_keywords.keys()),
+            "missing_sections": "Error analyzing the file",
         }
 
     headings = re.findall(

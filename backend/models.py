@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from sqlalchemy import (
     Column,
     DateTime,
@@ -10,9 +9,7 @@ from sqlalchemy import (
     Text,
 )
 from sqlalchemy.orm import relationship
-
 from database import Base
-
 
 class Repository(Base):
     __tablename__ = "repositories"

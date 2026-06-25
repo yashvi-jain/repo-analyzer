@@ -1,6 +1,5 @@
 import networkx as nx
 
-
 def risk_level(avg_risk):
 
     if avg_risk < 25:
@@ -48,46 +47,6 @@ def architecture_score(summary, graph):
 
     return round(max(0, min(100, final_score)), 2)
 
-
-def recommendations(summary, files, graph):
-
-    recommendations = []
-
-    if summary["average_complexity"] > 5:
-        recommendations.append(
-            "Reduce cyclomatic complexity by refactoring large functions."
-        )
-
-    if summary["average_maintainability"] < 70:
-        recommendations.append(
-            "Improve maintainability by reducing function size and duplication."
-        )
-
-    if summary["average_risk"] > 40:
-        recommendations.append(
-            "Prioritize high-risk files for refactoring."
-        )
-    
-    if summary["code_health"] < 70:
-        recommendations.append(
-            "Improve code complexity and optimize high-risk files."
-        )
-
-    cycles = list(nx.simple_cycles(graph))
-
-    if cycles:
-        recommendations.append(
-            "Resolve circular dependencies between modules."
-        )
-
-    if not recommendations:
-        recommendations.append(
-            "Repository follows good engineering practices. Look at the file metrics to optimize further."
-        )
-
-    return recommendations
-
-
 def generate_report(summary, files, graph, git_stats, readme):
 
     hotspots = sorted(
@@ -124,35 +83,18 @@ def generate_report(summary, files, graph, git_stats, readme):
     )
 
     return {
-
         "overall_grade":
             summary["grade"],
-
         "code_health":
             summary["code_health"],
-
         "architecture_score":
             architecture,
-
         "risk_level":
             risk_level(summary["average_risk"]),
-
         "readme": readme,
-
         "top_hotspots": hotspots,
-
         "most_complex_files": complex_files,
-
         "highest_risk_files": risky_files,
-
         "duplicate_files": duplicate_files,
-
         "dependency_cycles": dependency_cycles,
-
-        "recommendations":
-            recommendations(
-                summary,
-                files,
-                graph,
-            ),
     }

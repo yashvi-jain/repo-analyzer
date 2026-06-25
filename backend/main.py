@@ -20,12 +20,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 @app.on_event("startup")
 def startup():
 
     init_db()
-
 
 @app.get("/")
 def root():
@@ -34,14 +32,12 @@ def root():
         "message": "GitHub Repository Analyzer API"
     }
 
-
 @app.get("/health")
 def health():
 
     return {
         "status": "healthy"
     }
-
 
 @app.post("/analyze")
 def analyze(payload: dict):
@@ -58,11 +54,8 @@ def analyze(payload: dict):
         github_url
     )
 
-
 # Database endpoints
 # (implemented after persistence)
-
-
 @app.get("/repositories")
 def repositories():
 
@@ -71,7 +64,6 @@ def repositories():
         "Coming after database integration."
     }
 
-
 @app.get("/repository/{repo_id}")
 def repository(repo_id: int):
 
@@ -79,7 +71,6 @@ def repository(repo_id: int):
         "message":
         f"Repository {repo_id} endpoint coming soon."
     }
-
 
 @app.delete("/repository/{repo_id}")
 def delete_repository(repo_id: int):

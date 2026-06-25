@@ -7,6 +7,7 @@ import { analyzeRepository } from "../api/api";
 import SummaryCard from "../components/SummaryCard";
 import DataTable from "../components/DataTable";
 import DependencyGraph from "../components/DependencyGraph";
+import AIInsights from "../components/AIInsights";
 
 export default function Dashboard() {
   const location = useLocation();
@@ -42,7 +43,7 @@ export default function Dashboard() {
             </h2>
 
             <p className="mt-3 text-neutral-400">
-                Cloning repository, analyzing source files and generating report...
+                Cloning repository, analyzing source files, generating engineering report and AI insights...
             </p>
         </div>
     );
@@ -81,7 +82,7 @@ export default function Dashboard() {
   highest_risk_files,
   duplicate_files,
   dependency_cycles,
-  recommendations,
+  ai_insights,
 } = data;
     return (
     <div className="mx-auto max-w-[1400px] px-6 py-10">
@@ -282,7 +283,7 @@ export default function Dashboard() {
           </p>
         ) : (
           <div className="space-y-3">
-            {duplicate_files.filter(file => file.duplicate > 10).slice(0, 10).map((file) => (
+            {duplicate_files.filter(file => file.duplicate > 5).slice(0, 5).map((file) => (
               <div
                 key={file.file}
                 className="flex items-center justify-between border-b border-[var(--border)] pb-2"
@@ -323,18 +324,8 @@ export default function Dashboard() {
         )}
       </section>
 
-      <section className="glass-card mt-10 p-8">
-        <h2 className="font-heading mb-6 text-2xl font-semibold">
-          Recommendations
-        </h2>
-
-        <ul className="space-y-3 text-neutral-300">
-          {recommendations?.map((item) => (
-            <li key={item}>
-              • {item}
-            </li>
-          ))}
-        </ul>
+      <section className="mt-10">
+          <AIInsights insights={ai_insights} />
       </section>
 
     </div>

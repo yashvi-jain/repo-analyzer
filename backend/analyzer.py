@@ -6,15 +6,13 @@ from github_utils import (
     get_git_statistics,
     analyze_readme,
 )
-
 from metrics import analyze_repository
-
 from report import generate_report
-
+from ai_insights import generate_ai_insights
 from sqlalchemy.orm import Session
-
 from database import SessionLocal
 from models import Repository, Analysis, FileMetric
+import traceback
 
 def save_analysis(
     github_url: str,
@@ -47,21 +45,13 @@ def save_analysis(
             db.refresh(repository)
 
         analysis = Analysis(
-
             repository_id=repository.id,
-
             overall_risk=analysis_result["summary"]["average_risk"],
-
             average_complexity=analysis_result["summary"]["average_complexity"],
-
             maintainability_index=analysis_result["summary"]["average_maintainability"],
-
             architecture_score=report["architecture_score"],
-
             code_health=report["code_health"],
-
             overall_grade=report["overall_grade"],
-
             risk_level=report["risk_level"],
         )
 
@@ -72,27 +62,16 @@ def save_analysis(
         for file in analysis_result["files"]:
 
             metric = FileMetric(
-
                 analysis_id=analysis.id,
-
                 file_path=file["file"],
-
                 language=file["language"],
-
                 lines=file["lines"],
-
                 cyclomatic_complexity=file["complexity"],
-
                 maintainability_index=file["maintainability"],
-
                 risk_score=file["risk"],
-
                 duplicate_percentage=file["duplicate"],
-
                 hotspot_score=file["hotspot"],
-
                 git_churn=file["git_churn"],
-
                 dead_code=str(file["dead_code"]),
             )
 
@@ -140,6 +119,31 @@ def analyze_github_repository(github_url: str):
         readme,
     )
 
+    important = {}
+
+    for file in report["highest_risk_files"]:
+        important[file["file"]] = file
+
+    for file in report["most_complex_files"]:
+        important[file["file"]] = file
+
+    for file in report["top_hotspots"]:
+        important[file["file"]] = file
+
+    for file in report["duplicate_files"]:
+        important[file["file"]] = file
+
+    try:
+        ai_insights = generate_ai_insights(
+            repo_path,
+            list(important.values())
+        )
+    except Exception as e:
+        traceback.print_exc()
+        ai_insights = {
+            "error": str(e)
+        }
+
     save_analysis(
         github_url,
         repo_path,
@@ -148,36 +152,20 @@ def analyze_github_repository(github_url: str):
     )
 
     return {
-
         "repository": github_url,
-
         "summary": analysis["summary"],
-
         "files": analysis["files"],
-
         "dependency_graph": dependency_graph_json(graph),
-
         "git_statistics": git_stats,
-
         "overall_grade": report["overall_grade"],
-
         "code_health": report["code_health"],
-
         "architecture_score": report["architecture_score"],
-
         "risk_level": report["risk_level"],
-
         "readme": report["readme"],
-
         "top_hotspots": report["top_hotspots"],
-
         "most_complex_files": report["most_complex_files"],
-
         "highest_risk_files": report["highest_risk_files"],
-
         "duplicate_files": report["duplicate_files"],
-
         "dependency_cycles": report["dependency_cycles"],
-
-        "recommendations": report["recommendations"],
+        "ai_insights": ai_insights,
     }

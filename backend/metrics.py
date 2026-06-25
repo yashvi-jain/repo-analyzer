@@ -1,8 +1,8 @@
 import hashlib
 from pathlib import Path
 import os
-
 import lizard
+from git import Repo
 from radon.complexity import cc_visit
 from radon.metrics import mi_visit
 from collections import Counter
@@ -24,15 +24,11 @@ LIZARD_EXTENSIONS = {
     ".tsx",
 }
 
-# -------------------------------------------------------
 # File Cache
-# -------------------------------------------------------
 FINGERPRINT_CACHE = {}
 FILE_CACHE = {}
-# -------------------------------------------------------
-# Helpers
-# -------------------------------------------------------
 
+# Helpers
 def read_file(file_path: str) -> str:
     """
     Reads a file once and caches it.
@@ -76,10 +72,7 @@ def count_lines(file_path: str):
 
     return source.count("\n") + 1
 
-# -------------------------------------------------------
 # Cyclomatic Complexity
-# -------------------------------------------------------
-
 def python_complexity(source: str) -> float:
     """
     Average cyclomatic complexity for Python.
@@ -145,11 +138,7 @@ def calculate_complexity(file_path: str):
 
     return 0.0
 
-
-# -------------------------------------------------------
 # Maintainability Index
-# -------------------------------------------------------
-
 def calculate_maintainability(file_path: str):
     """
     Radon MI for Python.
@@ -176,10 +165,7 @@ def calculate_maintainability(file_path: str):
 import re
 from collections import defaultdict
 
-# -------------------------------------------------------
 # Language Detection
-# -------------------------------------------------------
-
 LANGUAGE_MAP = {
     ".py": "Python",
     ".cpp": "C++",
@@ -194,7 +180,6 @@ LANGUAGE_MAP = {
     ".tsx": "React (TS)",
 }
 
-
 def detect_language(file_path: str):
     """
     Detect programming language from extension.
@@ -204,11 +189,7 @@ def detect_language(file_path: str):
 
     return LANGUAGE_MAP.get(extension, "Unknown")
 
-
-# -------------------------------------------------------
 # Tokenization
-# -------------------------------------------------------
-
 def tokenize(source: str):
     """
     Removes comments, whitespace and symbols.
@@ -223,10 +204,7 @@ def tokenize(source: str):
 
     return tokens
 
-# -------------------------------------------------------
 # Fingerprinting
-# -------------------------------------------------------
-
 def fingerprints(source: str):
     """
     Returns cached fingerprints.
@@ -280,10 +258,7 @@ def jaccard_similarity(a, b):
         len(a | b)
     )
 
-# -------------------------------------------------------
 # Duplicate Detection
-# -------------------------------------------------------
-
 def duplicate_percentage(file_path, all_files):
     """
     Duplicate percentage using fingerprint similarity.
@@ -361,11 +336,7 @@ def duplicate_clusters(all_files):
 
     return clusters
 
-
-# -------------------------------------------------------
 # Python Dead Code
-# -------------------------------------------------------
-
 def detect_dead_python(source: str):
     """
     Very lightweight dead-code detection.
@@ -395,11 +366,7 @@ def detect_dead_python(source: str):
 
     return dead
 
-
-# -------------------------------------------------------
 # C/C++ Unused Includes
-# -------------------------------------------------------
-
 def detect_unused_includes(source: str):
     """
     Simple heuristic.
@@ -431,11 +398,7 @@ def detect_unused_includes(source: str):
 
     return unused
 
-
-# -------------------------------------------------------
 # Dead Code Dispatcher
-# -------------------------------------------------------
-
 def dead_code_report(file_path: str):
 
     source = read_file(file_path)
@@ -462,12 +425,7 @@ def dead_code_report(file_path: str):
 
     return {}
 
-from git import Repo
-
-# -------------------------------------------------------
 # Git Churn
-# -------------------------------------------------------
-
 def file_churn(repo_path: str):
     """
     Number of commits touching every file.
@@ -501,11 +459,7 @@ def file_churn(repo_path: str):
 
     return churn
 
-
-# -------------------------------------------------------
 # Risk Score
-# -------------------------------------------------------
-
 def calculate_risk_score(
     complexity,
     maintainability,
@@ -520,44 +474,27 @@ def calculate_risk_score(
     """
 
     complexity_score = min(complexity * 8, 100)
-
     maintainability_penalty = (
         0
         if maintainability is None
         else 100 - maintainability
     )
-
     churn_score = min(churn * 5, 100)
-
     size_score = size_penalty(lines)
-
     dead_code_score = min(dead_code_count * 10, 100)
-
     score = (
-
         0.25 * complexity_score
-
         + 0.15 * churn_score
-
         + 0.20 * maintainability_penalty
-
         + 0.15 * duplicate_percent
-
         + 0.10 * coupling
-
         + 0.10 * size_score
-
         + 0.10 * dead_code_score
-
     )
 
     return round(min(score, 100), 2)
 
-
-# -------------------------------------------------------
 # Hotspots
-# -------------------------------------------------------
-
 def hotspot_score(
     complexity,
     churn,
@@ -568,10 +505,7 @@ def hotspot_score(
 
     return round(complexity * max(churn, 1), 2)
 
-# -------------------------------------------------------
 # File Size Penalty
-# -------------------------------------------------------
-
 def size_penalty(lines):
     """
     Penalize large source files.
@@ -591,11 +525,7 @@ def size_penalty(lines):
 
     return 100
 
-
-# -------------------------------------------------------
 # Coupling Penalty
-# -------------------------------------------------------
-
 def coupling_penalty(graph, file_path):
     """
     Fan-in + Fan-out penalty.
@@ -612,10 +542,7 @@ def coupling_penalty(graph, file_path):
 
     return min(coupling * 10, 100)
 
-# -------------------------------------------------------
 # Repository Code Health
-# -------------------------------------------------------
-
 def code_health(metrics):
 
     if not metrics:
@@ -672,11 +599,7 @@ def code_health(metrics):
         2,
     )
 
-
-# -------------------------------------------------------
 # Grade
-# -------------------------------------------------------
-
 def health_grade(score):
 
     if score >= 80:
@@ -693,11 +616,7 @@ def health_grade(score):
 
     return "F"
 
-
-# -------------------------------------------------------
 # Repository Summary
-# -------------------------------------------------------
-
 def repository_summary(metrics):
 
     if not metrics:
@@ -751,10 +670,7 @@ def repository_summary(metrics):
         "grade": health_grade(health),
     }
 
-# -------------------------------------------------------
 # Complete Repository Analysis
-# -------------------------------------------------------
-
 def analyze_file(file, repo_path, source_files, churn, dependency_graph):
 
     relative_path = file
@@ -854,6 +770,5 @@ def analyze_repository(repo_path: str, source_files, dependency_graph):
     return {
 
         "summary": repository_summary(metrics),
-
         "files": metrics,
     }

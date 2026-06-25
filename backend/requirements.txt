@@ -5,6 +5,8 @@ sqlalchemy
 psycopg[binary]
 python-dotenv
 
+google-genai
+
 pydantic
 pydantic-settings
 
