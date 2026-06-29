@@ -87,7 +87,7 @@ export default function Dashboard() {
   errorr,
 } = data;
     return (
-    <div className="mx-auto max-w-[1400px] px-6 py-10">
+    <div className="mx-auto max-w-[1400px] px-6 py-0">
       <p className="text-center text-lg"> Curious how we analyze your repository? Explore the feature guide on the home page. </p>
       <h1 className="font-heading text-4xl font-bold">
         Repository Analysis

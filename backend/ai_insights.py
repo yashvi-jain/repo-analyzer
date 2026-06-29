@@ -184,7 +184,7 @@ Source Code:
             {
                 "provider": None,
                 "fallback": None,
-                "insights": None,
+                "insights": [],
                 "error": text
             }
         ]

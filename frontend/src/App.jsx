@@ -31,7 +31,7 @@ export default function App() {
           <nav className="flex items-center gap-3">
             <NavLink to="/" className={navLinkClass}>
               <LayoutDashboard size={18} />
-              Dashboard
+              Home
             </NavLink>
 
             {/* <NavLink to="/history" className={navLinkClass}>
