@@ -93,7 +93,7 @@ export default function Dashboard() {
         Repository Analysis
       </h1>
 
-      <p className="p-1 mt-2 break-all text-neutral-400">
+      <p className="p-6 mt-2 break-all text-neutral-400">
         {githubUrl}
       </p>
 
