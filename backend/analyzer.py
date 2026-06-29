@@ -169,6 +169,8 @@ def analyze_github_repository(github_url: str):
         "duplicate_files": report["duplicate_files"],
         "dependency_cycles": report["dependency_cycles"],
         "ai_insights": ai_insights["insights"],
+        "model": ai_insights["provider"],
+        "error": ai_insights["error"],
     }
 
     shutil.rmtree(repo_path, ignore_errors=True)

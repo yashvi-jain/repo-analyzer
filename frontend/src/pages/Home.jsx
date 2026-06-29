@@ -8,45 +8,74 @@ import {
   BarChart3,
   GitBranch,
   Files,
+  Wrench,
+  GitCommitHorizontal,
+  Sparkles,
+  Flame,
+  Copy,
 } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 
 const features = [
   {
+    title: "AI Insights",
+    description:
+      "Uses Gemini 2.5 Flash with automatic Groq fallback to explain engineering issues, identify root causes behind high-risk metrics, and suggest practical refactoring strategies for important files.",
+    icon: Sparkles,
+  },
+  {
     title: "Code Health",
     description:
-      "Evaluate maintainability, documentation, and overall repository quality.",
+      "An overall quality score computed from maintainability, complexity, engineering risk, duplication, architecture, and code quality metrics. Higher is better.",
     icon: Activity,
-  },
-  {
-    title: "Complexity Analysis",
-    description:
-      "Measure cyclomatic complexity and identify difficult-to-maintain files.",
-    icon: BarChart3,
-  },
-  {
-    title: "Engineering Risk",
-    description:
-      "Detect risky modules, technical debt, and potential bottlenecks.",
-    icon: ShieldAlert,
   },
   {
     title: "Architecture Score",
     description:
-      "Analyze project organization and architectural consistency.",
+      "Evaluates the overall project structure based on dependency cycles, modularity, coupling, and overall code health. Higher is better.",
     icon: Network,
+  },
+  {
+    title: "Engineering Risk",
+    description:
+      "A composite score calculated from complexity, maintainability, Git churn, hotspots, duplication, and potential dead code to identify files most likely to cause future issues. Lower is better.",
+    icon: ShieldAlert,
+  },
+  {
+    title: "Complexity Analysis",
+    description:
+      "Measures the number of logical execution paths through your code. Higher complexity means harder testing, debugging, and maintenance. Lower is better.",
+    icon: BarChart3,
+  },
+  {
+    title: "Maintainability Index",
+    description:
+      "Estimates how easy the codebase is to maintain using Halstead Volume, cyclomatic complexity, and lines of code. Higher is better.",
+    icon: Wrench,
   },
   {
     title: "Dependency Analysis",
     description:
-      "Visualize relationships between files and modules.",
+      "Builds a complete dependency graph using AST parsing (Python) and include parsing (C/C++) to visualize module relationships and detect circular dependencies.",
     icon: GitBranch,
   },
   {
-    title: "Hotspots & Duplicates",
+    title: "Top Hotspots",
     description:
-      "Find duplicate code and frequently changing files.",
-    icon: Files,
+      "Identifies files with the highest maintenance burden by combining cyclomatic complexity and Git churn. These files are often the best candidates for refactoring.",
+    icon: Flame,
+  },
+  {
+    title: "Git Analytics",
+    description:
+      "Analyzes commit history, file churn, contributor activity, and modification frequency to understand how the repository evolves over time.",
+    icon: GitCommitHorizontal,
+  },
+  {
+    title: "Duplicate Detection",
+    description:
+      "Detects structurally similar code using fingerprint-based similarity analysis, helping reduce maintenance effort and inconsistent bug fixes. Lower is better.",
+    icon: Copy,
   },
 ];
 
@@ -81,17 +110,17 @@ export default function Home() {
   };
 
   return (
-    <div className="mx-auto max-w-[1400px] px-6 py-14">
+    <div className="mx-auto max-w-[1400px] px-6 py-0">
       <section className="flex flex-col items-center text-center">
 
-        <div className="glass-card mb-8 inline-flex items-center gap-2 px-4 py-2">
+        {/* <div className="glass-card mb-8 inline-flex items-center gap-2 px-4 py-2">
           <FaGithub size={18} />
           <span className="text-sm text-neutral-300">
-            Repository Analysis
+            GitHub Repository Analyzer
           </span>
-        </div>
+        </div> */}
 
-        <h1 className="font-heading text-5xl font-bold leading-tight md:text-6xl">
+        <h1 className="font-heading text-4xl font-bold leading-tight md:text-6xl">
           Understand Any
           <span className="text-primary block">
             GitHub Repository
@@ -153,7 +182,8 @@ export default function Home() {
           </p>
         </div>
       </section>
-            <section className="mt-20 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <p className="text-center p-6 text-lg"> Curious how we analyze your repository? Explore the feature guide below before moving forward. </p>
+      <section className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {features.map((feature) => {
           const Icon = feature.icon;
 

@@ -83,10 +83,12 @@ export default function Dashboard() {
   duplicate_files,
   dependency_cycles,
   ai_insights,
+  model,
+  errorr,
 } = data;
     return (
     <div className="mx-auto max-w-[1400px] px-6 py-10">
-
+      <p className="text-center text-lg"> Curious how we analyze your repository? Explore the feature guide on the home page. </p>
       <h1 className="font-heading text-4xl font-bold">
         Repository Analysis
       </h1>
@@ -325,7 +327,7 @@ export default function Dashboard() {
       </section>
 
       <section className="mt-10">
-          <AIInsights insights={ai_insights} />
+          <AIInsights insights={ai_insights} model={model} error={errorr}/>
       </section>
 
     </div>

@@ -1,7 +1,7 @@
-export default function AIInsights({ insights }) {
+export default function AIInsights({ insights, model, error}) {
   if (!insights) return null;
 
-  if (insights.error) {
+  if (error) {
     return (
       <section className="glass-card p-8">
         <h2 className="font-heading text-2xl font-semibold">
@@ -21,7 +21,7 @@ export default function AIInsights({ insights }) {
       <h2 className="font-heading mb-6 text-2xl font-semibold">
         AI Engineering Insights
       </h2>
-
+      <div className="font-semibold">{model==="gemini"? "Current model - Gemini 2.5 Flash" : "Gemini server busy. Used fallback model."}</div>
       <div className="space-y-8">
 
         {insights.map((item) => {

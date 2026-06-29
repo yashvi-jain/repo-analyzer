@@ -22,8 +22,8 @@ export default function App() {
           {/* Logo */}
           <div className="flex items-center gap-3">
             <FaGithub size={28} className="text-primary" />
-            <h1 className="font-heading text-2xl font-bold tracking-tight">
-              GitHub Repository Analyzer
+            <h1 className="font-heading text-3xl font-bold tracking-tight">
+              CodeXray
             </h1>
           </div>
 

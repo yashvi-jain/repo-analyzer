@@ -175,12 +175,16 @@ Source Code:
             "provider": "groq" if fallback_used else "gemini",
             "fallback": fallback_used,
             "insights": parsed,
+            "error": None
         }
 
     except Exception:
 
         return [
             {
+                "provider": None,
+                "fallback": None,
+                "insights": None,
                 "error": text
             }
         ]
