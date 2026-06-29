@@ -21,7 +21,7 @@ export default function AIInsights({ insights, model, error}) {
       <h2 className="font-heading mb-6 text-2xl font-semibold">
         AI Engineering Insights
       </h2>
-      <div className="font-semibold">{model==="gemini"? "Current model - Gemini 2.5 Flash" : "Gemini server busy. Used fallback model."}</div>
+      <div className="font-semibold">{model==="gemini"? "Current model - Gemini 2.5 Flash" : model==="groq" ? "Gemini server busy. Used fallback model." : "All models are busy. Please try again."}</div>
       <div className="space-y-8">
 
         {insights.map((item) => {
