@@ -86,10 +86,10 @@ export default function Dashboard() {
   model,
   errorr,
 } = data;
-    return (
+    return ( 
     <div className="mx-auto max-w-[1400px] px-6 py-0">
       <p className="text-center text-lg"> Curious how we analyze your repository? Explore the feature guide on the home page. </p>
-      <h1 className="font-heading text-4xl font-bold">
+      <h1 className="p-6 font-heading text-4xl font-bold">
         Repository Analysis
       </h1>
 

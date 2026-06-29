@@ -156,9 +156,19 @@ Source Code:
         print(f"Gemini failed: {e}")
         print("Falling back to Groq...")
 
-        text = _generate_with_groq(full_prompt).strip()
-
         fallback_used = True
+
+        try:
+            text = _generate_with_groq(full_prompt).strip()
+
+        except Exception as e:
+
+            return {
+                "provider": None,
+                "fallback": True,
+                "insights": [],
+                "error": str(e),
+            }
 
     if text.startswith("```json"):
         text = text[len("```json"):]
@@ -169,25 +179,24 @@ Source Code:
     text = text.strip()
 
     try:
+
         parsed = json.loads(text)
 
         return {
             "provider": "groq" if fallback_used else "gemini",
             "fallback": fallback_used,
             "insights": parsed,
-            "error": None
+            "error": None,
         }
 
     except Exception:
 
-        return [
-            {
-                "provider": None,
-                "fallback": None,
-                "insights": [],
-                "error": text
-            }
-        ]
+        return {
+            "provider": "groq" if fallback_used else "gemini",
+            "fallback": fallback_used,
+            "insights": [],
+            "error": text,
+        }
 
 def _generate_with_gemini(prompt):
 
