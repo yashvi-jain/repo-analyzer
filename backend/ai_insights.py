@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 from dotenv import load_dotenv
 from google import genai
+from groq import Groq
 
 load_dotenv()
 
@@ -14,6 +15,15 @@ if not API_KEY:
 client = genai.Client(api_key=API_KEY)
 
 MODEL = "gemini-2.5-flash-lite"
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+if not GROQ_API_KEY:
+    raise ValueError("GROQ_API_KEY not found in .env")
+    
+groq_client = Groq(api_key=GROQ_API_KEY)
+
+GROQ_MODEL = "llama-3.3-70b-versatile"
 
 MAX_CHARS = 15000
 
@@ -133,13 +143,22 @@ Source Code:
 
 """
 
-    response = client.models.generate_content(
-        model=MODEL,
-        contents=prompt + payload,
-    )
-    # print(response.text)
+    full_prompt = prompt + payload
 
-    text = response.text.strip()
+    fallback_used = False
+
+    try:
+
+        text = _generate_with_gemini(full_prompt).strip()
+
+    except Exception as e:
+
+        print(f"Gemini failed: {e}")
+        print("Falling back to Groq...")
+
+        text = _generate_with_groq(full_prompt).strip()
+
+        fallback_used = True
 
     if text.startswith("```json"):
         text = text[len("```json"):]
@@ -150,7 +169,13 @@ Source Code:
     text = text.strip()
 
     try:
-        return json.loads(text)
+        parsed = json.loads(text)
+
+        return {
+            "provider": "groq" if fallback_used else "gemini",
+            "fallback": fallback_used,
+            "insights": parsed,
+        }
 
     except Exception:
 
@@ -159,3 +184,31 @@ Source Code:
                 "error": text
             }
         ]
+
+def _generate_with_gemini(prompt):
+
+    response = client.models.generate_content(
+        model=MODEL,
+        contents=prompt,
+    )
+
+    return response.text
+
+
+def _generate_with_groq(prompt):
+
+    response = groq_client.chat.completions.create(
+
+        model=GROQ_MODEL,
+
+        messages=[
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+
+        temperature=0.2,
+    )
+
+    return response.choices[0].message.content

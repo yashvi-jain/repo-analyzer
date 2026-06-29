@@ -168,7 +168,7 @@ def analyze_github_repository(github_url: str):
         "highest_risk_files": report["highest_risk_files"],
         "duplicate_files": report["duplicate_files"],
         "dependency_cycles": report["dependency_cycles"],
-        "ai_insights": ai_insights,
+        "ai_insights": ai_insights["insights"],
     }
 
     shutil.rmtree(repo_path, ignore_errors=True)
