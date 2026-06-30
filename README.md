@@ -17,8 +17,6 @@ Paste any public GitHub repository link and get detailed insights on the maintai
 - DevOps:
   - Vercel, Render, PostgreSQL
 
-## Access the project here : https://repo-analyzer-zeta.vercel.app
-
 ## Run Frontend
 cd frontend 
 npm run dev
@@ -26,6 +24,8 @@ npm run dev
 ## Run Backend
 cd backend
 uvicorn main:app --reload
+
+#### Access the project here : https://repo-analyzer-zeta.vercel.app
 
 ## Images
 <img width="1365" height="595" alt="image" src="https://github.com/user-attachments/assets/4393d378-ace1-4f3c-b5be-6b013c5a2ed3" />
