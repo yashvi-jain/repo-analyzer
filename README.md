@@ -1,5 +1,5 @@
 # CodeXray - GitHub Repository Analyzer
-Paste any public GitHub reposiory link and get detailed insights on the maintainability gaps, architectural bottlenecks and risky code files based on a static analysis using 8+ software engineering metrics, supported with AI based root causes and recomendations for highest risk files.
+Paste any public GitHub repository link and get detailed insights on the maintainability gaps, architectural bottlenecks and risky code files based on a static analysis using 8+ software engineering metrics, supported with AI based root causes and recomendations for highest risk files.
 
 ## Features:
 - Supports 7+ source file types including Python, C, C++, JavaScript
