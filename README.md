@@ -17,7 +17,12 @@ npm run dev
 uvicorn main:app --reload
 
 ## Images
+<img width="1365" height="595" alt="image" src="https://github.com/user-attachments/assets/4393d378-ace1-4f3c-b5be-6b013c5a2ed3" />
+<img width="1126" height="537" alt="image" src="https://github.com/user-attachments/assets/8bf32956-d296-41ca-9988-dcc7af18975c" />
+<img width="1079" height="511" alt="image" src="https://github.com/user-attachments/assets/8f501b71-d4d8-41f2-b38c-9d0db255c1b0" />
 <img width="1132" height="556" alt="image" src="https://github.com/user-attachments/assets/1b0f56b4-8190-4a2c-8d16-e109c1ba8fb5" />
+<img width="1365" height="598" alt="image" src="https://github.com/user-attachments/assets/2c806264-4c0f-4bf9-a4e8-fd407603a18a" />
+
 <img width="1365" height="578" alt="image" src="https://github.com/user-attachments/assets/d9ec1389-bf4c-41df-a8fc-a462f1e946b5" />
 <img width="1365" height="333" alt="image" src="https://github.com/user-attachments/assets/c307f651-e3bf-42c6-a2dd-9d17b5af8c2a" />
 <img width="1365" height="592" alt="image" src="https://github.com/user-attachments/assets/43027065-e8e8-43f2-914b-0cc7d238f858" />
